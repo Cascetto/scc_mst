@@ -30,7 +30,12 @@ def extract_min(heap: list):
         return ext
 
 
-def decrease_key(heap: list, x: int, key):
+def decrease_key(heap: list, e, key):
+    x = -1
+    for i in range(len(heap)):
+        if heap[i] == e:
+            x = i
+            break
     if key < heap[x].key:
         heap[x].key = key
         while x > 0 and heap[int(x / 2)].key > heap[x].key:
