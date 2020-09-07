@@ -1,93 +1,113 @@
+import math
 import random
-from math import inf
-from graphviz import Digraph
-
-from typing import List
-
 from min_heap import *
+from graphviz import Digraph
 
 
 class Node:
 
-    def __init__(self, i, k):
-        self.key = k
-        self.index = i
+    def __init__(self, index: int):
+        self.index = index
+        self.key = math.inf
         self.previus = None
 
-    def print(self):
-        print(self.index, self.key, self.previus.index if self.previus is not None else "First")
+
+def create_graph(size: int, max_weight: float):
+    graph = [[0 for j in range(size)] for i in range(size)]
+    for i in range(size):
+        for j in range(size):
+            if i != j:
+                graph[i][j] = random.randint(0, int(max_weight))
+    return graph
 
 
-# def create_graph(number_of_nodes: int, max_weight: int = 1) -> list:
-#     graph = [0] * (number_of_nodes * number_of_nodes)
-#     for i in range(number_of_nodes):
-#         for j in range(number_of_nodes):
-#             if i != j:
-#                 graph[i * number_of_nodes + j] = random.randint(0, max_weight)
-#     return graph
-#
-#
-# def mst_prim(graph: list):
-#     n = int(sqrt(len(graph)))
-#     key = [inf] * n
-#     previus = [None] * n
-#     r = random.randint(0, n - 1)
-#     create_heap(key)
-#     decrease_key(key, r, 0)
-#     while len(key) > 0:
-#         u = extract_min(graph)
-#         for v in graph[]
+def create_unoriented_graph(size: int, max_weight: float):
+    graph = [[0 for j in range(size)] for i in range(size)]
+    for i in range(size):
+        for j in range(i, size):
+            if i != j:
+                graph[i][j] = graph[j][i] = random.randint(0, int(max_weight))
+    return graph
 
 
-def find_node(nodes: List[Node], index: int):
-    for i in range(len(nodes)):
-        if index == nodes[i].index:
-            return i
-    return -1
+def inverse_graph(graph: list) -> list:
+    gt = graph
+    for i in range(len(graph)):
+        for j in range(len(graph)):
+            gt[j][i] = graph[i][j]
+    return gt
 
 
-def create_graph(number_of_nodes: int, max_weight: int = 1) -> list:
-    adj = []
-    dot = Digraph('Graph')
-    for u in range(number_of_nodes):
-        dot.node(str(u))
-        adj.append([])
-        for v in range(number_of_nodes):
-            (adj[u]).append(random.randint(0, max_weight) if u != v else 0)
-    for i in range(len(adj)):
-        for j in range(len(adj[i])):
-            if adj[i][j] > 0:
-                dot.edge(str(i), str(j), str(adj[i][j]))
-    dot.view()
-    return adj
-
-
-def mst_prim(graph: list) -> list:
-    dot = Digraph('MST')
-    result = list()
-    n = len(graph)
-    for i in range(n):
-        dot.node(str(i))
-    nodes = [Node(i, inf) for i in range(n)]
-    r = random.randint(0, n - 1)
-    create_heap(nodes)
-    nodes[r].key = 0
-    while len(nodes) > 0:
-        u = extract_min(nodes)
-        # for w in range(len(graph[u.index])):
-        #     v = find_node(nodes, w)
-        #     if u.key > graph[u.index][w] > 0 and v >= 0:
-        #         nodes[v].previus = u
-        #         decrease_key(nodes, v, graph[u.index][w])
-
-        for v in nodes:
-            w = graph[u.index][v.index]
-            if v.key > w > 0:
-                v.previus = u
-                decrease_key(nodes, v, w)
+def prim(graph: list):
+    queue = []
+    for i in range(len(graph)):
+        queue.append(Node(i))
+    decrease_key(queue, random.randint(0, len(queue) - 1), 0)
+    result = []
+    while len(queue) > 0:
+        u = extract_min(queue)
+        for v_index in range(len(graph[u.index])):
+            v = find_element_by_index(queue, v_index)
+            if v is not None and queue[v].key > graph[u.index][v_index] > 0:
+                queue[v].previus = u
+                decrease_key(queue, v, graph[u.index][v_index])
         result.append(u)
-    for node in result:
-        if node.previus is not None:
-            dot.edge(str(node.previus.index), str(node.index), str(node.key))
-    dot.view()
     return result
+
+
+def DFS_visit(graph: list, node: int, color: list, previus: list, time: list, start: list, final: list):
+    time[0] += 1
+    start[node] = time[0]
+    color[node] = 'grey'
+    for i in range(len(graph[node])):
+        if graph[node][i] > 60 and color[i] == 'white':
+            previus[i] = node
+            DFS_visit(graph, i, color, previus, time, start, final)
+    color[node] = 'black'
+    time[0] += 1
+    final[node] = time[0]
+
+
+def DFS(graph: list, print_graph: bool = False):
+    color = ['white'] * len(graph)
+    previus = [None] * len(graph)
+    start = final = [0] * len(graph)
+    time = [0]
+    added = [False] * len(graph)
+    check_order = [i for i in range(len(graph))]
+    random.shuffle(check_order)
+    for node in check_order:
+        if color[node] == 'white':
+            DFS_visit(graph, node, color, previus, time, start, final)
+
+        if print_graph:
+            dot = Digraph(f"Noda esplorato {node}")
+            for i in range(len(color)):
+                if color[i] == 'black' and not added[i]:
+                    dot.node(str())
+            for i in range(len(previus)):
+                if previus[i] is not None:
+                    dot.edge(str(previus[i]), str(i))
+            dot.view()
+    return start, final, previus
+
+
+def SCC(graph: list, order: list, print_graph: bool = False):
+    color = ['white'] * len(graph)
+    previus = [None] * len(graph)
+    start = final = [0] * len(graph)
+    time = [0]
+    for node in order:
+        if color[node] == 'white':
+            DFS_visit(graph, node, color, previus, time, start, final)
+
+        if print_graph:
+            dot = Digraph(f"Noda esplorato {node}")
+            for node in range(len(color)):
+                if color[node] != 'white':
+                    dot.node(str(node))
+            for i in range(len(previus)):
+                if previus[i] is not None:
+                    dot.edge(str(previus[i]), str(i))
+            dot.view()
+    return start, final, previus
