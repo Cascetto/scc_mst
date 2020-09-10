@@ -2,7 +2,8 @@ from grapher import *
 from graphviz import Digraph
 
 if __name__ == '__main__':
-    s = 5
+    s = 20
+    rate = 90
     # g = create_unoriented_graph(s, 5)
     #
     # result = prim(g)
@@ -12,19 +13,28 @@ if __name__ == '__main__':
     #         dot.edge(str(node.previus.index), str(node.index), str(node.key))
     # dot.view()
 
-    g = create_graph(s, 100)
+    g = create_graph(s, 100, rate)
     d = Digraph("1")
     for i in range(s):
         d.node(str(i))
     for i in range(s):
         for j in range(s):
-            if g[i][j] > 60:
+            if g[i][j] > 0:
                 d.edge(str(i), str(j), str(g[i][j]))
     d.view()
 
     d, f, pi = DFS(g)
 
     gt = inverse_graph(g)
+
+    d = Digraph("2")
+    for i in range(s):
+        d.node(str(i))
+    for i in range(s):
+        for j in range(s):
+            if gt[i][j] > 0:
+                d.edge(str(i), str(j), str(gt[i][j]))
+    d.view()
 
     order = []
     l = len(f)
