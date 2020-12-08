@@ -1,5 +1,5 @@
 from graphviz import Digraph
-import  matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def print_prim(nodes: list, graph_size: int, iteration: int):
