@@ -1,8 +1,8 @@
 import math
 import random
 from min_heap import *
-from graphviz import Digraph
 from utils import contains
+from printer import print_prim, _print_graph
 
 
 class Node:
@@ -14,7 +14,7 @@ class Node:
 
 
 def create_graph(size: int, max_weight: float, min_weight: int = 0):
-    graph = [[0 for j in range(size)] for _ in range(size)]
+    graph = [[0 for _ in range(size)] for _ in range(size)]
     for i in range(size):
         for j in range(size):
             w = random.randint(0, int(max_weight))
@@ -46,6 +46,7 @@ def prim(graph: list):
         queue.append(Node(i))
     decrease_key(queue, random.randint(0, len(queue) - 1), 0)
     result = []
+    iteration = 1
     while len(queue) > 0:
         u = extract_min(queue)
         for v_index in range(len(graph[u.index])):
@@ -54,6 +55,8 @@ def prim(graph: list):
                 queue[v].previus = u
                 decrease_key(queue, v, graph[u.index][v_index])
         result.append(u)
+        print_prim(result, len(graph), iteration)
+        iteration += 1
     return result
 
 
@@ -70,7 +73,7 @@ def DFS_visit(graph: list, node: int, color: list, previus: list, time: list, st
     final[node] = time[0]
 
 
-def DFS(graph: list, print_graph: bool = False):
+def DFS(graph: list):
     color = ['white'] * len(graph)
     previus = [None] * len(graph)
     start = final = [0] * len(graph)
@@ -81,24 +84,14 @@ def DFS(graph: list, print_graph: bool = False):
     for node in check_order:
         if color[node] == 'white':
             DFS_visit(graph, node, color, previus, time, start, final)
-
-        if print_graph:
-            dot = Digraph(f"Noda esplorato {node}")
-            for i in range(len(color)):
-                if color[i] == 'black' and not added[i]:
-                    dot.node(str())
-            for i in range(len(previus)):
-                if previus[i] is not None:
-                    dot.edge(str(previus[i]), str(i))
-            dot.view()
     return start, final, previus
 
 
-def SCC(graph: list, order: list, print_graph: bool = False):
+def SCC(graph: list, order: list, tries: int, suppress_output: bool = False):
     color = ['white'] * len(graph)
     previus = [None] * len(graph)
     added = [False] * len(graph)
-    sccs = []
+    scc_nodes = []
     start = final = [0] * len(graph)
     time = [0]
     for node in order:
@@ -111,34 +104,30 @@ def SCC(graph: list, order: list, print_graph: bool = False):
                 added[i] = True
                 scc.append(i)
         if len(scc) > 0:
-            sccs.append(scc)
-
-    dot = Digraph("SCC")
-    for scc in sccs:
-        s = ""
-        for n in scc:
-            s += f"{str(n)}, "
-        s = s[0: len(s) - 2]
-        dot.node(s)
-    # print scc connections
+            scc_nodes.append(scc)
     used = []
-    for scc in sccs:
+    edge = []
+    for scc in scc_nodes:
         for node in scc:
             for i in range(len(graph[node])):
                 if graph[node][i] > 0:
-                    for s in sccs:
+                    for s in scc_nodes:
                         if contains(s, i) and s != scc and not contains(used, [scc, s]):
-                            s1 = ""
+                            s1 = []
                             for n in scc:
-                                s1 += f"{str(n)}, "
-                            s1 = s1[0: len(s1) - 2]
-                            s2 = ""
+                                s1.append(n)
+                            s2 = []
                             for n in s:
-                                s2 += f"{str(n)}, "
-                            s2 = s2[0: len(s2) - 2]
-                            dot.edge(s1, s2)
+                                s2.append(n)
+                            # s1 = ""
+                            # for n in scc:
+                            #     s1 += f"{str(n)}, "
+                            # s1 = s1[0: len(s1) - 2]
+                            # s2 = ""
+                            # for n in s:
+                            #     s2 += f"{str(n)}, "
+                            # s2 = s2[0: len(s2) - 2]
+                            edge.append((s1, s2))
                             used.append([scc, s])
-
-    dot.view()
-
-    return start, final, previus
+    _print_graph(scc_nodes, edge, f"scc{tries}_{len(graph)}x{len(graph)}_result", False, suppress_output=suppress_output)
+    return start, final, previus, len(scc_nodes)

@@ -1,50 +1,46 @@
 from grapher import *
-from graphviz import Digraph
+from printer import *
+
+
+def part_1():
+    g = create_unoriented_graph(5, 10)
+    print_graph(g, "prim", suppress_output=True)
+    prim(g)
+
+
+def part_2():
+    smin = 5
+    smax = 15
+    threesold = 70
+    tries = 10
+    xaxis = []
+    yaxis = []
+
+    for s in range(smin, smax):
+        y_entry = 0
+        for t in range(tries):
+            g = create_graph(s, 100, threesold)
+            print_graph(g, f"scc{tries}_{s}x{s}_oriented_graph", suppress_output=True)
+            d, f, pi = DFS(g)
+            gt = inverse_graph(g)
+            print_graph(gt, f"scc{tries}_{s}x{s}_inverted_graph", suppress_output=True)
+            order = []
+            l = len(f)
+            for i in range(l):
+                m = 0
+                v = -1
+                for j in range(l):
+                    if f[j] > v:
+                        v = f[j]
+                        m = j
+                order.append(m)
+                f[m] = -1
+            y_entry += SCC(gt, order, t + 1, suppress_output=True)[3]
+        xaxis.append(s)
+        yaxis.append(y_entry / tries)
+    plot_data(xaxis, yaxis, "number of nodes", "number of sccs")
+
 
 if __name__ == '__main__':
-    s = 20
-    rate = 90
-    # g = create_unoriented_graph(s, 5)
-    #
-    # result = prim(g)
-    # dot = Digraph("2")
-    # for node in result:
-    #     if node.previus is not None:
-    #         dot.edge(str(node.previus.index), str(node.index), str(node.key))
-    # dot.view()
-
-    g = create_graph(s, 100, rate)
-    d = Digraph("1")
-    for i in range(s):
-        d.node(str(i))
-    for i in range(s):
-        for j in range(s):
-            if g[i][j] > 0:
-                d.edge(str(i), str(j), str(g[i][j]))
-    d.view()
-
-    d, f, pi = DFS(g)
-
-    gt = inverse_graph(g)
-
-    d = Digraph("2")
-    for i in range(s):
-        d.node(str(i))
-    for i in range(s):
-        for j in range(s):
-            if gt[i][j] > 0:
-                d.edge(str(i), str(j), str(gt[i][j]))
-    d.view()
-
-    order = []
-    l = len(f)
-    for i in range(l):
-        m = 0
-        v = -1
-        for j in range(l):
-            if f[j] > v:
-                v = f[j]
-                m = j
-        order.append(m)
-        f[m] = -1
-    SCC(gt, order, True)
+    part_1()
+    part_2()
