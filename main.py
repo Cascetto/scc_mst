@@ -4,13 +4,13 @@ from printer import *
 
 def part_1():
     g = create_unoriented_graph(5, 10)
-    print_graph(g, "prim", suppress_output=True)
+    print_graph(g, "prim", suppress_output=False)
     prim(g)
 
 
 def part_2():
-    smin = 5
-    smax = 15
+    smin = 3
+    smax = 10
     threesold = 70
     tries = 10
     xaxis = []
@@ -42,5 +42,5 @@ def part_2():
 
 
 if __name__ == '__main__':
-    part_1()
+    # part_1()
     part_2()
