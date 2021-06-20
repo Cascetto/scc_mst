@@ -1,7 +1,6 @@
 import math
 import random
 from min_heap import *
-from utils import contains
 from printer import print_prim, _print_graph
 
 
@@ -112,7 +111,7 @@ def SCC(graph: list, order: list, tries: int, suppress_output: bool = False):
             for i in range(len(graph[node])):
                 if graph[node][i] > 0:
                     for s in scc_nodes:
-                        if contains(s, i) and s != scc and not contains(used, [scc, s]):
+                        if i in s and s != scc and not [scc, s] in used:
                             s1 = []
                             for n in scc:
                                 s1.append(n)
