@@ -9,21 +9,21 @@ class Node:
     def __init__(self, index: int):
         self.index = index
         self.key = math.inf
-        self.previus = None
+        self.previous = None
 
 
-def create_graph(size: int, max_weight: float, min_weight: int = 0):
+def create_graph(size: int, max_weight: int, min_weight: int = 0):
     graph = [[0 for _ in range(size)] for _ in range(size)]
     for i in range(size):
         for j in range(size):
-            w = random.randint(0, int(max_weight))
+            w = random.randint(0, max_weight)
             if i != j and w >= min_weight:
                 graph[i][j] = w
     return graph
 
 
 def create_unoriented_graph(size: int, max_weight: float):
-    graph = [[0 for j in range(size)] for i in range(size)]
+    graph = [[0 for _ in range(size)] for _ in range(size)]
     for i in range(size):
         for j in range(i, size):
             if i != j:
@@ -43,6 +43,7 @@ def prim(graph: list):
     queue = []
     for i in range(len(graph)):
         queue.append(Node(i))
+    # nodo di partenza
     decrease_key(queue, random.randint(0, len(queue) - 1), 0)
     result = []
     iteration = 1
@@ -51,7 +52,7 @@ def prim(graph: list):
         for v_index in range(len(graph[u.index])):
             v = find_element_by_index(queue, v_index)
             if v is not None and queue[v].key > graph[u.index][v_index] > 0:
-                queue[v].previus = u
+                queue[v].previous = u
                 decrease_key(queue, v, graph[u.index][v_index])
         result.append(u)
         print_prim(result, len(graph), iteration)
@@ -77,7 +78,6 @@ def DFS(graph: list):
     previus = [None] * len(graph)
     start = final = [0] * len(graph)
     time = [0]
-    added = [False] * len(graph)
     check_order = [i for i in range(len(graph))]
     random.shuffle(check_order)
     for node in check_order:
@@ -88,14 +88,14 @@ def DFS(graph: list):
 
 def SCC(graph: list, order: list, tries: int, suppress_output: bool = False):
     color = ['white'] * len(graph)
-    previus = [None] * len(graph)
+    previous = [None] * len(graph)
     added = [False] * len(graph)
     scc_nodes = []
     start = final = [0] * len(graph)
     time = [0]
     for node in order:
         if color[node] == 'white':
-            DFS_visit(graph, node, color, previus, time, start, final)
+            DFS_visit(graph, node, color, previous, time, start, final)
 
         scc = []
         for i in range(len(color)):
@@ -118,15 +118,7 @@ def SCC(graph: list, order: list, tries: int, suppress_output: bool = False):
                             s2 = []
                             for n in s:
                                 s2.append(n)
-                            # s1 = ""
-                            # for n in scc:
-                            #     s1 += f"{str(n)}, "
-                            # s1 = s1[0: len(s1) - 2]
-                            # s2 = ""
-                            # for n in s:
-                            #     s2 += f"{str(n)}, "
-                            # s2 = s2[0: len(s2) - 2]
                             edge.append((s1, s2))
                             used.append([scc, s])
     _print_graph(scc_nodes, edge, f"scc{tries}_{len(graph)}x{len(graph)}_result", False, suppress_output=suppress_output)
-    return start, final, previus, len(scc_nodes)
+    return start, final, previous, len(scc_nodes)

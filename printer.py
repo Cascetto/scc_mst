@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 def print_prim(nodes: list, graph_size: int, iteration: int):
     graph = [[0 for _ in range(graph_size)] for _ in range(graph_size)]
     for node in nodes:
-        if node.previus is not None:
-            graph[node.previus.index][node.index] = node.key
+        if node.previous is not None:
+            graph[node.previous.index][node.index] = node.key
     print_graph(graph, f"prim_iteration_{iteration}", suppress_output=True)
 
 

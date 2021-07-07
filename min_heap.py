@@ -1,3 +1,6 @@
+from random import randint
+
+
 def parent(i: int):
     return int(i / 2)
 
@@ -22,20 +25,6 @@ def min_heapify(heap: list, index: int):
     if minimum != index + 1:
         heap[index], heap[minimum - 1] = heap[minimum - 1], heap[index]
         min_heapify(heap, minimum - 1)
-
-
-# def min_heapify(heap: list, i: int):
-#     size = len(heap)
-#     min_ind = i + 1
-#     l = 2 * min_ind
-#     r = l + 1
-#     if l <= size and heap[l - 1].key < heap[min_ind - 1].key:
-#         min_ind = l
-#     if r <= size and heap[r - 1].key < heap[min_ind - 1].key:
-#         min_ind = r
-#     if min_ind != i + 1:
-#         heap[i], heap[min_ind - 1] = heap[min_ind - 1], heap[i]
-#         min_heapify(heap, min_ind - 1)
 
 
 def create_heap(heap: list):
@@ -79,14 +68,3 @@ def decrease_key(heap: list, index: int, key: float):
             heap[p - 1], heap[index - 1] = heap[index - 1], heap[p - 1]
             index = parent(index)
             p = parent(index)
-
-
-from random import randint
-
-
-class obj:
-    def __init__(self):
-        self.key = randint(10, 100)
-
-    def print(self):
-        print(self.key, sep=', ')
