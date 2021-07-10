@@ -151,7 +151,7 @@ L'algoritmo di Prim ha dimostrato di poter generare un MST: a seguire un esempio
 
 \newpage
 \subsection{Strongly Connected Components}
-Ecco un esempio di funzionamento: in ordine, grafo iniziale, grafo inverso, grafo SCCs.
+Ecco qualche esempi di funzionamento: in ordine, grafo iniziale, grafo inverso, grafo SCCs.
 
 \begin{figure}[!htb]
 \minipage{0.32\textwidth}
@@ -168,11 +168,52 @@ Ecco un esempio di funzionamento: in ordine, grafo iniziale, grafo inverso, graf
 \endminipage
 \end{figure}
 
-I risultati in questo caso sono differenti dalle aspettative, in quanto in media, per grafi grandi si ha solo una SCC. Questo probabilmente accade perchè dato che gli archi sono assegnati casualmente, al crescere del numero dei nodi cresce anche il numero degli archi, con maggiori probabilità di unire più SCCs.
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example12.png"}
+  \caption{Original Graph}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example12_inv.png"}
+  \caption{Inverted Graph}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example12_result.png"}
+  \caption{Result}
+\endminipage
+\end{figure}
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example18.png"}
+  \caption{Original Graph}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example18_inv.png"}
+  \caption{Inverted Graph}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{"./output/scc_example18_result.png"}
+  \caption{Result}
+\endminipage
+\end{figure}
+
+\newpage
+
+I risultati in questo caso sono differenti dalle aspettative, in quanto in media, per grafi grandi si ha solo una SCC. Questo probabilmente accade perchè dato che gli archi sono assegnati casualmente, al crescere del numero dei nodi cresce anche il numero degli archi, con maggiori probabilità di unire più SCCs. 
 \begin{figure}[!h]
 \centering
 \includegraphics[width=0.45\linewidth]
 {"./sccs_to_nodes.jpg"}
 \label{graph}
 \end{figure}
+\newline
+Allora sono state eseguite simulazioni aggiuntive, per evidenziare come il numero di nodi e la quantità di archi influenzano il numero di SCCs.
+\begin{figure}[!h]
+\centering
+\includegraphics[width=0.8\linewidth]
+{"./nodes&threshold_to_sccs.png"}
+\label{graph}
+\end{figure}
+
 \end{document}
